@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Planets {
+  id         Int      @id @default(autoincrement())
+  name       String?
+  climate    String?
+  terrain    String?
+  population String?
+  residents  People[] @relation("planetResidents")
+}
+
+model Species {
+  id              Int     @id @default(autoincrement())
+  name            String?
+  classification  String?
+  averageHeight   String?
+  averageLifespan String?
+  language        String?
+  homeworld       String?
+  people People[] @relation("speciesPeople")
+}
+
+model People {
+  id         Int     @id @default(autoincrement())
+  name       String?
+  height     String?
+  mass       String?
+  hair_color String?
+  skin_color String?
+  eye_color  String?
+  birth_year String?
+  gender     String?
+
+  homeworld   Planets? @relation("planetResidents", fields: [homeworldId], references: [id])
+  homeworldId Int?
+  species     Species? @relation("speciesPeople", fields: [speciesId], references: [id])
+  speciesId   Int?
+}
